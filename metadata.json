@@ -1,0 +1,10 @@
+{
+  "name": "سَكِينة - Sakina",
+  "description": "رفيقك الهادئ للقرآن الكريم والأذكار ومواقيت الصلاة والقبلة",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

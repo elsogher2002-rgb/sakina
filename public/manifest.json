@@ -1,0 +1,31 @@
+{
+  "id": "/",
+  "name": "سَكِينة - Sakina",
+  "short_name": "سَكِينة",
+  "description": "رفيقك الهادئ للقرآن الكريم والذكر ومواقيت الصلاة والقبلة",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay"],
+  "orientation": "portrait",
+  "prefer_related_applications": false,
+  "dir": "rtl",
+  "lang": "ar",
+  "theme_color": "#FDF8F0",
+  "background_color": "#FDF8F0",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["lifestyle", "utilities", "books"]
+}

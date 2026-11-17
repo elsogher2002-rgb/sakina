@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="sakinaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7BC0BE"/>
+      <stop offset="100%" stop-color="#559B99"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8D5B7"/>
+      <stop offset="100%" stop-color="#CBB38F"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <rect width="100" height="100" rx="28" fill="#FDF8F0"/>
+  <!-- Crescent Moon -->
+  <path d="M52 18 C33 18 18 33 18 52 C18 71 33 86 52 86 C64 86 74 80 80 70 C72 74 62 74 54 70 C40 63 34 46 41 32 C45 24 53 19 62 18 C58 18 55 18 52 18 Z" fill="url(#sakinaGrad)"/>
+  <!-- Elegant Mosque Dome & Minaret in Negative/Accent Space -->
+  <path d="M52 42 C48 48 45 54 45 60 L59 60 C59 54 56 48 52 42 Z" fill="url(#goldGrad)"/>
+  <!-- Star -->
+  <polygon points="68,34 70,39 75,39 71,42 73,47 68,44 63,47 65,42 61,39 66,39" fill="#E8D5B7"/>
+</svg>

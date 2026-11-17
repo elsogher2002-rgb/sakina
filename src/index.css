@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-sakina-bg: #FDF8F0;
+  --color-sakina-dark-bg: #1A1815;
+  --color-sakina-card: #FFFFFF;
+  --color-sakina-card-alt: #FFF9EB;
+  --color-sakina-dark-card: #24211D;
+  --color-sakina-dark-card-alt: #2D2822;
+  --color-sakina-primary: #7BC0BE;
+  --color-sakina-primary-hover: #67AEA9;
+  --color-sakina-secondary: #E8D5B7;
+  --color-sakina-headings: #6B4A2F;
+  --color-sakina-dark-headings: #EED6BD;
+  --color-sakina-text: #4A4A4A;
+  --color-sakina-dark-text: #CFCBC3;
+  --font-cairo: "Cairo", system-ui, -apple-system, sans-serif;
+  --font-tajawal: "Tajawal", system-ui, -apple-system, sans-serif;
+  --font-amiri: "Amiri", "Traditional Arabic", serif;
+}
+
+:root {
+  font-family: var(--font-cairo);
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Quranic typography class */
+.font-quran {
+  font-family: "Amiri", serif;
+  line-height: 2.2;
+}
+
+/* Minimal smooth scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(123, 192, 190, 0.35);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(123, 192, 190, 0.6);
+}
+
+/* Skeleton Loading Shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f0eae1 25%, #fcf8f2 50%, #f0eae1 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(90deg, #2a2520 25%, #352f28 50%, #2a2520 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Subtle Tasbih Click Bounce Animation */
+@keyframes tasbihBounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.94); }
+  80% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.tasbih-tap-active {
+  animation: tasbihBounce 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Safe area insets for mobile edge devices */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 16px);
+}

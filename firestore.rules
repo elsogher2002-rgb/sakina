@@ -1,0 +1,167 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global safety net: deny everything by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Global Helpers ---
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn()
+        && request.auth.token.email == 'hamomostafa573@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    // --- Validation Blueprints ---
+    function isValidAdRequest(data) {
+      return data.keys().hasAll([
+          'senderName',
+          'contactInfo',
+          'adTitle',
+          'message',
+          'placement',
+          'status',
+          'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'senderName',
+          'contactInfo',
+          'adTitle',
+          'adLink',
+          'message',
+          'placement',
+          'status',
+          'createdAt'
+        ])
+        && data.senderName is string
+        && data.senderName.size() >= 2
+        && data.senderName.size() <= 80
+        && data.contactInfo is string
+        && data.contactInfo.size() >= 4
+        && data.contactInfo.size() <= 120
+        && data.adTitle is string
+        && data.adTitle.size() >= 3
+        && data.adTitle.size() <= 120
+        && (
+          !('adLink' in data)
+          || (
+            data.adLink is string
+            && data.adLink.size() <= 300
+            && (data.adLink.size() == 0 || data.adLink.matches('^https?://.+'))
+          )
+        )
+        && data.message is string
+        && data.message.size() >= 5
+        && data.message.size() <= 1500
+        && data.placement is string
+        && data.placement in ['slot1', 'slot2', 'both']
+        && data.status is string
+        && data.status in ['new', 'read', 'published', 'archived']
+        && data.createdAt is timestamp;
+    }
+
+    function isValidPublishedAd(data) {
+      return data.keys().hasAll([
+          'title',
+          'description',
+          'ctaText',
+          'targetUrl',
+          'slotNumber',
+          'active',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'title',
+          'description',
+          'ctaText',
+          'targetUrl',
+          'slotNumber',
+          'active',
+          'updatedAt'
+        ])
+        && data.title is string
+        && data.title.size() >= 2
+        && data.title.size() <= 100
+        && data.description is string
+        && data.description.size() >= 3
+        && data.description.size() <= 240
+        && data.ctaText is string
+        && data.ctaText.size() >= 2
+        && data.ctaText.size() <= 40
+        && data.targetUrl is string
+        && data.targetUrl.size() >= 8
+        && data.targetUrl.size() <= 300
+        && data.targetUrl.matches('^https?://.+')
+        && data.slotNumber is number
+        && data.slotNumber in [1, 2]
+        && data.active is bool
+        && data.updatedAt is timestamp;
+    }
+
+    // --- Collection: ad_requests ---
+    // Visitors can submit an ad inquiry, while ONLY the verified developer can read, update, or delete messages.
+    match /ad_requests/{requestId} {
+      allow get: if isValidId(requestId) && isAdmin();
+      allow list: if isAdmin();
+      allow create: if isValidId(requestId)
+        && isValidAdRequest(incoming())
+        && incoming().status == 'new'
+        && incoming().createdAt == request.time;
+      allow update: if isValidId(requestId)
+        && isAdmin()
+        && isValidAdRequest(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().senderName == existing().senderName
+        && incoming().contactInfo == existing().contactInfo
+        && incoming().adTitle == existing().adTitle
+        && incoming().message == existing().message
+        && incoming().placement == existing().placement
+        && (!('adLink' in existing()) || incoming().adLink == existing().adLink)
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status']);
+      allow delete: if isValidId(requestId) && isAdmin();
+    }
+
+    // --- Collection: published_ads ---
+    // Active ads are publicly readable for display; ONLY the verified developer can manage ads.
+    match /published_ads/{adId} {
+      allow get: if isValidId(adId) && (isAdmin() || (resource != null && existing().active == true));
+      allow list: if resource.data.active == true || isAdmin();
+      allow create: if isValidId(adId)
+        && isAdmin()
+        && isValidPublishedAd(incoming())
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(adId)
+        && isAdmin()
+        && isValidPublishedAd(incoming())
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'title',
+          'description',
+          'ctaText',
+          'targetUrl',
+          'slotNumber',
+          'active',
+          'updatedAt'
+        ]);
+      allow delete: if isValidId(adId) && isAdmin();
+    }
+  }
+}
